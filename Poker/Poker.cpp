@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "controllers/gameController.h"
+#include "controllers/Dealer.h"
 
 void main()
 {
-    GameController gameController;
+    Dealer gameController;
     gameController.Start();
 }

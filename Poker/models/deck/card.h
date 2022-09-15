@@ -13,7 +13,7 @@ enum class CardValue
 class Card
 {
 	private:
-		CardSuit _hand;
+		CardSuit _suit;
 		CardValue _value;
 
 		std::string handToString() const;
@@ -28,5 +28,8 @@ class Card
 		{
 			return this->valueToString() + " of " + this->handToString();
 		}
+
+		CardSuit GetSuit() const;
+		CardValue GetValue() const;
 };
 

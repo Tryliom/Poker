@@ -18,7 +18,7 @@
     <ClCompile Include="Poker.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="controllers\gameController.cpp">
+    <ClCompile Include="controllers\dealer.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="models\deck\deck.cpp">
@@ -33,12 +33,12 @@
     <ClCompile Include="models\player\player.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="models\deck\handValue.cpp">
+    <ClCompile Include="models\deck\pattern\pattern.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="controllers\gameController.h">
+    <ClInclude Include="controllers\dealer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="models\deck\deck.h">
@@ -53,7 +53,7 @@
     <ClInclude Include="models\player\player.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="models\deck\handValue.h">
+    <ClInclude Include="models\deck\pattern\pattern.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

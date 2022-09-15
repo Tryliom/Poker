@@ -14,9 +14,8 @@ namespace Utils
 	 * \param vector The vector to remove the object from
 	 * \param element The object to remove
 	 */
-	template <typename T>
-	void Remove(std::vector<T>& vector, const T& element)
+	template <typename T> void Remove(std::vector<T>& vector, const T& element)
 	{
 		vector.erase(vector.begin(), vector.end(), element);
-	}
+	};
 }
