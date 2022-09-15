@@ -1,12 +1,13 @@
 #pragma once
 #include "../models/deck/deck.h"
 #include "../models/player/player.h"
+#include "../models/deck/pattern/pattern.h"
 
 class Player;
 int constexpr NB_PLAYER = 5;
 int constexpr START_CARD_PER_PLAYERS = 5;
 
-class GameController
+class Dealer
 {
 private:
 	/**
@@ -22,8 +23,10 @@ private:
 	 * \brief Distribute a number of card equal to START_CARD_PER_PLAYERS to each players unless the deck is empty
 	 */
 	void distributeCards();
+
+	Pattern getPattern(const std::vector<Card>& cards);
 public:
-	GameController();
+	Dealer();
 	/**
 	 * \brief Start the game
 	 */

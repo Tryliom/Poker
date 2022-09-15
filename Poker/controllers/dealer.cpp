@@ -1,8 +1,8 @@
-#include "gameController.h"
+#include "Dealer.h"
 
 #include <iostream>
 
-GameController::GameController()
+Dealer::Dealer()
 {
 	this->_deck = Deck();
     for (int i = 0; i < NB_PLAYER; i++)
@@ -12,16 +12,20 @@ GameController::GameController()
 }	
 
 
-void GameController::Start()
+void Dealer::Start()
 {
     // Distribute card to each players
     this->distributeCards();
 
     //TODO: Check who has the best suit value
+    for (Player player: this->_players)
+    {
+		Pattern pattern = Pattern::Check(player.GetHand());
+    }
 
 }
 
-void GameController::distributeCards()
+void Dealer::distributeCards()
 {
     // While the deck is not empty, distribute a number of cards defined to each player
     for (Player player : this->_players)
@@ -39,7 +43,7 @@ void GameController::distributeCards()
     }
 }
 
-void GameController::Restart()
+void Dealer::Restart()
 {
 	this->_deck = Deck();
 }
