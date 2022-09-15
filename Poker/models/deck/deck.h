@@ -10,6 +10,10 @@ class Deck
 
 	public:
 		Deck();
+		/**
+		 * @brief Pick a random card from deck and delete it from the deck
+		 * @return {Card} A unique card from the deck
+		 */
 		Card PickRandomCard();
 		std::string ToString() const;
 
