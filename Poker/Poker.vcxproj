@@ -130,6 +130,7 @@
     <ClCompile Include="models\deck\card.cpp" />
     <ClCompile Include="models\deck\deck.cpp" />
     <ClCompile Include="controllers\gameController.cpp" />
+    <ClCompile Include="models\player\player.cpp" />
     <ClCompile Include="models\utility\utils.cpp" />
     <ClCompile Include="Poker.cpp" />
   </ItemGroup>
@@ -138,6 +139,7 @@
     <ClInclude Include="models\deck\deck.h" />
     <ClInclude Include="controllers\gameController.h" />
     <ClInclude Include="models\utility\utils.h" />
+    <ClInclude Include="models\player\player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
