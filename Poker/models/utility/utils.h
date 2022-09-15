@@ -4,14 +4,19 @@
 namespace Utils
 {
 	/**
-	 * @brief Get a random integer between min and max included.
-	 * @param min The minimum value
-	 * @param max The maximum value
-	 * @return int A random integer between min and max included.
-	 */
-	int GetRandomInt(const int min, const int max);
-	/**
 	 * @brief Clear the console.
 	 */
 	void ClearConsole();
+
+	/**
+	 * \brief Remove an object from the vector
+	 * \tparam T A class defined in the vector
+	 * \param vector The vector to remove the object from
+	 * \param element The object to remove
+	 */
+	template <typename T>
+	void Remove(std::vector<T>& vector, const T& element)
+	{
+		vector.erase(vector.begin(), vector.end(), element);
+	}
 }
