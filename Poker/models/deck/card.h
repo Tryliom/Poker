@@ -20,6 +20,6 @@ class Card
 		std::string valueToString() const;
 	public:
 		Card(Hand hand, Value value);
-		void ToString() const;
+		std::string ToString() const;
 };
 

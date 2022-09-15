@@ -66,7 +66,7 @@ std::string Card::valueToString() const
 
 
 
-void Card::ToString() const
+std::string Card::ToString() const
 {
-	std::cout << this->valueToString() << " of " << this->handToString() << std::endl;
+	return this->valueToString() + " of " + this->handToString();
 }
