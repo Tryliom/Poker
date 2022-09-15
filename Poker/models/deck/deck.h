@@ -16,6 +16,9 @@ class Deck
 		 */
 		Card PickRandomCard();
 
+		/**
+		 * \brief Return the content of the deck as a string
+		 */
 		explicit operator std::string() const
 		{
 			std::string result = "This deck contains " + std::to_string(this->_cards.size()) + " cards:";

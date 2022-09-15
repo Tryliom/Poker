@@ -20,7 +20,7 @@ std::string Card::handToString() const
 			return "spades";
 		case Suit::DIAMONDS:
 			return "diamonds";
-		case Suit::ENUM_END:
+		case Suit::END:
 			return "unknown";
 	}
 
@@ -57,7 +57,7 @@ std::string Card::valueToString() const
 			return "King";
 		case Value::ACE:
 			return "Ace";
-		case Value::ENUM_END:
+		case Value::END:
 			return "Unknown";
 	}
 

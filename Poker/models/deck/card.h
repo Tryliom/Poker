@@ -2,12 +2,12 @@
 #include <string>
 
 enum class Suit {
-	CLUBS, HEARTS, SPADES, DIAMONDS, ENUM_END
+	CLUBS, HEARTS, SPADES, DIAMONDS, END
 };
 
 enum class Value
 {
-	TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE, ENUM_END
+	TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE, END
 };
 
 class Card
@@ -21,6 +21,9 @@ class Card
 	public:
 		Card(Suit hand, Value value);
 
+		/**
+		 * \brief Return the card as a string
+		 */
 		explicit operator std::string() const
 		{
 			return this->valueToString() + " of " + this->handToString();

@@ -8,9 +8,9 @@ const std::vector<Value> VALUES = { Value::TWO, Value::THREE, Value::FOUR, Value
 Deck::Deck()
 {
 	this->_cards = {};
-	for (int hand = static_cast<int>(Suit::CLUBS); hand < static_cast<int>(Suit::ENUM_END); hand++)
+	for (int hand = static_cast<int>(Suit::CLUBS); hand < static_cast<int>(Suit::END); hand++)
 	{
-		for (int value = static_cast<int>(Value::TWO); value < static_cast<int>(Value::ENUM_END); value++)
+		for (int value = static_cast<int>(Value::TWO); value < static_cast<int>(Value::END); value++)
 		{
 			this->_cards.emplace_back(Card(static_cast<Suit>(hand), static_cast<Value>(value)));
 		}
