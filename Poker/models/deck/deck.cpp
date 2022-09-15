@@ -24,3 +24,15 @@ Card Deck::PickRandomCard()
 	//TODO: Remove card from deck
 	return card;
 }
+
+std::string Deck::ToString() const
+{
+	std::string result = "This deck contains " + std::to_string(this->_cards.size()) + " cards:";
+
+	for (Card card : this->_cards)
+	{
+		result += "\n" + card.ToString();
+	}
+
+	return result;
+}

@@ -11,6 +11,7 @@ class Deck
 	public:
 		Deck();
 		Card PickRandomCard();
+		std::string ToString() const;
 
 };
 
