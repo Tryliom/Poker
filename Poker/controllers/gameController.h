@@ -1,6 +1,8 @@
 #pragma once
 #include "../models/deck/deck.h"
+#include "../models/player/player.h"
 
+class Player;
 int constexpr NB_PLAYER = 5;
 int constexpr START_CARD_PER_PLAYERS = 5;
 
@@ -11,6 +13,15 @@ private:
 	 * \brief The whole deck used for a game
 	 */
 	Deck _deck;
+    /**
+     * \brief The players of the game
+     */
+    std::vector<Player> _players;
+
+	/**
+	 * \brief Distribute a number of card equal to START_CARD_PER_PLAYERS to each players unless the deck is empty
+	 */
+	void distributeCards();
 public:
 	GameController();
 	/**
@@ -18,7 +29,7 @@ public:
 	 */
 	void Start();
 	/**
-	 * \brief Restart the game, reset the deck and all other attribute used in the game
+	 * \brief Restart the game, reset the deck and all players
 	 */
 	void Restart();
 };
