@@ -30,3 +30,8 @@ Card Deck::PickRandomCard()
 
 	return card;
 }
+
+bool Deck::IsEmpty() const
+{
+    return this->_cards.empty();
+}

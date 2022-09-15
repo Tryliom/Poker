@@ -15,7 +15,11 @@ class Deck
 		 * @return {Card} A unique card from the deck
 		 */
 		Card PickRandomCard();
-
+        /**
+         * \brief Check if the deck is empty
+         * \return {bool} return true if the deck is empty, false otherwise
+         */
+        bool IsEmpty() const;
 		/**
 		 * \brief Return the content of the deck as a string
 		 */
