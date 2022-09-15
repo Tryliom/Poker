@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Card::Card(const Suit hand, const Value value)
+Card::Card(const CardSuit hand, const CardValue value)
 {
 	this->_hand = hand;
 	this->_value = value;
@@ -12,15 +12,15 @@ std::string Card::handToString() const
 {
 	switch (this->_hand)
 	{
-		case Suit::CLUBS:
+		case CardSuit::CLUBS:
 			return "clubs";
-		case Suit::HEARTS:
+		case CardSuit::HEARTS:
 			return "hearts";
-		case Suit::SPADES:
+		case CardSuit::SPADES:
 			return "spades";
-		case Suit::DIAMONDS:
+		case CardSuit::DIAMONDS:
 			return "diamonds";
-		case Suit::END:
+		case CardSuit::END:
 			return "unknown";
 	}
 
@@ -31,33 +31,33 @@ std::string Card::valueToString() const
 {
 	switch (this->_value)
 	{
-		case Value::TWO:
+		case CardValue::TWO:
 			return "2";
-		case Value::THREE:
+		case CardValue::THREE:
 			return "3";
-		case Value::FOUR:
+		case CardValue::FOUR:
 			return "4";
-		case Value::FIVE:
+		case CardValue::FIVE:
 			return "5";
-		case Value::SIX:
+		case CardValue::SIX:
 			return "6";
-		case Value::SEVEN:
+		case CardValue::SEVEN:
 			return "7";
-		case Value::EIGHT:
+		case CardValue::EIGHT:
 			return "8";
-		case Value::NINE:
+		case CardValue::NINE:
 			return "9";
-		case Value::TEN:
+		case CardValue::TEN:
 			return "10";
-		case Value::JACK:
+		case CardValue::JACK:
 			return "Jack";
-		case Value::QUEEN:
+		case CardValue::QUEEN:
 			return "Queen";
-		case Value::KING:
+		case CardValue::KING:
 			return "King";
-		case Value::ACE:
+		case CardValue::ACE:
 			return "Ace";
-		case Value::END:
+		case CardValue::END:
 			return "Unknown";
 	}
 

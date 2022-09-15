@@ -4,17 +4,17 @@
 
 #include "../utility/utils.h"
 
-const std::vector<Suit> HANDS = {Suit::CLUBS, Suit::DIAMONDS, Suit::HEARTS, Suit::SPADES};
-const std::vector<Value> VALUES = { Value::TWO, Value::THREE, Value::FOUR, Value::FIVE, Value::SIX, Value::SEVEN, Value::EIGHT, Value::NINE, Value::TEN, Value::JACK, Value::QUEEN, Value::KING, Value::ACE };
+const std::vector<CardSuit> HANDS = {CardSuit::CLUBS, CardSuit::DIAMONDS, CardSuit::HEARTS, CardSuit::SPADES};
+const std::vector<CardValue> VALUES = { CardValue::TWO, CardValue::THREE, CardValue::FOUR, CardValue::FIVE, CardValue::SIX, CardValue::SEVEN, CardValue::EIGHT, CardValue::NINE, CardValue::TEN, CardValue::JACK, CardValue::QUEEN, CardValue::KING, CardValue::ACE };
 
 Deck::Deck()
 {
 	// Loop in suits and values to insert every type of cards inside the deck
-	for (int suit = static_cast<int>(Suit::CLUBS); suit < static_cast<int>(Suit::END); suit++)
+	for (int suit = static_cast<int>(CardSuit::CLUBS); suit < static_cast<int>(CardSuit::END); suit++)
 	{
-		for (int value = static_cast<int>(Value::TWO); value < static_cast<int>(Value::END); value++)
+		for (int value = static_cast<int>(CardValue::TWO); value < static_cast<int>(CardValue::END); value++)
 		{
-			this->_cards.emplace_back(Card(static_cast<Suit>(suit), static_cast<Value>(value)));
+			this->_cards.emplace_back(Card(static_cast<CardSuit>(suit), static_cast<CardValue>(value)));
 		}
 	}
 }

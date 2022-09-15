@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 
-enum class Suit {
+enum class CardSuit {
 	CLUBS, HEARTS, SPADES, DIAMONDS, END
 };
 
-enum class Value
+enum class CardValue
 {
 	TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE, END
 };
@@ -13,13 +13,13 @@ enum class Value
 class Card
 {
 	private:
-		Suit _hand;
-		Value _value;
+		CardSuit _hand;
+		CardValue _value;
 
 		std::string handToString() const;
 		std::string valueToString() const;
 	public:
-		Card(Suit hand, Value value);
+		Card(CardSuit hand, CardValue value);
 
 		/**
 		 * \brief Return the card as a string
