@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Card::Card(const Hand hand, const Value value)
+Card::Card(const Suit hand, const Value value)
 {
 	this->_hand = hand;
 	this->_value = value;
@@ -12,15 +12,15 @@ std::string Card::handToString() const
 {
 	switch (this->_hand)
 	{
-		case Hand::CLUBS:
+		case Suit::CLUBS:
 			return "clubs";
-		case Hand::HEARTS:
+		case Suit::HEARTS:
 			return "hearts";
-		case Hand::SPADES:
+		case Suit::SPADES:
 			return "spades";
-		case Hand::SQUARES:
-			return "squares";
-		case Hand::ENUM_END:
+		case Suit::DIAMONDS:
+			return "diamonds";
+		case Suit::ENUM_END:
 			return "unknown";
 	}
 
@@ -62,11 +62,4 @@ std::string Card::valueToString() const
 	}
 
 	return "Unknown";
-}
-
-
-
-std::string Card::ToString() const
-{
-	return this->valueToString() + " of " + this->handToString();
 }

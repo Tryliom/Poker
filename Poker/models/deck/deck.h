@@ -15,7 +15,18 @@ class Deck
 		 * @return {Card} A unique card from the deck
 		 */
 		Card PickRandomCard();
-		std::string ToString() const;
+
+		explicit operator std::string() const
+		{
+			std::string result = "This deck contains " + std::to_string(this->_cards.size()) + " cards:";
+
+			for (Card card : this->_cards)
+			{
+				result += "\n" + static_cast<std::string>(card);
+			}
+
+			return result;
+		}
 
 };
 

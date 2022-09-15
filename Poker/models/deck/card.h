@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-enum class Hand {
-	CLUBS, HEARTS, SPADES, SQUARES, ENUM_END
+enum class Suit {
+	CLUBS, HEARTS, SPADES, DIAMONDS, ENUM_END
 };
 
 enum class Value
@@ -13,13 +13,17 @@ enum class Value
 class Card
 {
 	private:
-		Hand _hand;
+		Suit _hand;
 		Value _value;
 
 		std::string handToString() const;
 		std::string valueToString() const;
 	public:
-		Card(Hand hand, Value value);
-		std::string ToString() const;
+		Card(Suit hand, Value value);
+
+		explicit operator std::string() const
+		{
+			return this->valueToString() + " of " + this->handToString();
+		}
 };
 
