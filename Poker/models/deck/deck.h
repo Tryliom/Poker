@@ -11,10 +11,14 @@ class Deck
 	public:
 		Deck();
 		/**
-		 * @brief Pick a random card from deck and delete it from the deck
+		 * \brief Shuffle the deck
+		 */
+		void Shuffle();
+		/**
+		 * @brief Pick a card from the top of the deck and delete it from the deck
 		 * @return {Card} A unique card from the deck
 		 */
-		Card PickRandomCard();
+		Card PickACard();
         /**
          * \brief Check if the deck is empty
          * \return {bool} return true if the deck is empty, false otherwise

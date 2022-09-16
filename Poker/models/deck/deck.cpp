@@ -1,8 +1,7 @@
 #include "deck.h"
+#include "pattern/Pattern.h"
 
 #include <random>
-
-#include "../utility/utils.h"
 
 const std::vector<CardSuit> HANDS = {CardSuit::CLUBS, CardSuit::DIAMONDS, CardSuit::HEARTS, CardSuit::SPADES};
 const std::vector<CardValue> VALUES = { CardValue::TWO, CardValue::THREE, CardValue::FOUR, CardValue::FIVE, CardValue::SIX, CardValue::SEVEN, CardValue::EIGHT, CardValue::NINE, CardValue::TEN, CardValue::JACK, CardValue::QUEEN, CardValue::KING, CardValue::ACE };
@@ -19,14 +18,17 @@ Deck::Deck()
 	}
 }
 
-Card Deck::PickRandomCard()
+void Deck::Shuffle()
 {
-	// Get a random int between 0 and the size of the deck
 	std::shuffle(this->_cards.begin(), this->_cards.end(), std::random_device());
-	// Get a card from the back of the list
-	const Card card = this->_cards.back();
+}
+
+Card Deck::PickACard()
+{
+	// Pick a card from the top of the deck
+	const Card card = this->_cards.front();
 	// Remove the card from the deck
-	Utils::Remove(this->_cards, card);
+	this->_cards.erase(this->_cards.begin());
 
 	return card;
 }
