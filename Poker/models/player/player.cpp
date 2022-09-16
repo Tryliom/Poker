@@ -2,15 +2,12 @@
 #include "../deck/card.h"
 #include "../deck/pattern/pattern.h"
 
-Player::Player()
+Player::Player(const std::string& name)
 {
+	this->_name = name;
     this->_hand = {};
-	this->_handValue = Pattern();
-}
-
-std::vector<Card> Player::GetHand() const
-{
-    return this->_hand;
+	this->_pattern = Pattern();
+	this->_score = 0;
 }
 
 void Player::AddCard(Card card)
@@ -18,7 +15,7 @@ void Player::AddCard(Card card)
     this->_hand.emplace_back(card);
 }
 
-void Player::SetHandValue(const Pattern& handValue)
+void Player::CheckPattern()
 {
-	this->_handValue = handValue;
+	this->_pattern = Pattern::Check(this->_hand);
 }
