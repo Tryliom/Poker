@@ -23,17 +23,11 @@ private:
 	 * \brief Distribute a number of card equal to START_CARD_PER_PLAYERS to each players unless the deck is empty
 	 */
 	void distributeCards();
-
-	Pattern getPattern(const std::vector<Card>& cards);
 public:
 	Dealer();
 	/**
-	 * \brief Start the game
+	 * \brief Start a new game
 	 */
-	void Start();
-	/**
-	 * \brief Restart the game, reset the deck and all players
-	 */
-	void Restart();
+	void StartAGame();
 };
 
