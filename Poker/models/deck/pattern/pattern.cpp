@@ -1,45 +1,170 @@
 ﻿#include "Pattern.h"
 
-#include <iostream>
-#include <map>
+#include <algorithm>
+#include <functional>
 #include <ostream>
+
+Pattern* Pattern::checkStraightFlush(std::vector<Card>& cards)
+{
+	sortCards(cards);
+
+	const std::vector<Card> sequence = getSequence(cards, true);
+
+	if (sequence.size() == 5)
+	{
+		return new Pattern(PatternType::STRAIGHT_FLUSH, getBestValue(sequence));
+	}
+		
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkFourOfAKind(const std::vector<Card>& cards)
+{
+	for (auto& card : cards)
+	{
+		const int total = countValue(cards, card.GetValue());
+
+		if (total == 4)
+		{
+			return new Pattern(PatternType::FOUR_OF_A_KIND, card.GetValue());
+		}
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkFullHouse(const std::vector<Card>& cards)
+{
+	CardValue* threeOfAKindValue = nullptr;
+	CardValue* pairValue = nullptr;
+
+	for (auto& card : cards)
+	{
+		const int total = countValue(cards, card.GetValue());
+
+		if (total == 3)
+		{
+			threeOfAKindValue = new CardValue(card.GetValue());
+		}
+		else if (total == 2)
+		{
+			pairValue = new CardValue(card.GetValue());
+		}
+	}
+
+	if (threeOfAKindValue != nullptr && pairValue != nullptr)
+	{
+		return new Pattern(PatternType::FULL_HOUSE, { *threeOfAKindValue, *pairValue });
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkFlush(const std::vector<Card>& cards)
+{
+	for (int i = 0; i < static_cast<int>(CardSuit::END); i++)
+	{
+		if (countSuit(cards, static_cast<CardSuit>(i)) == 5)
+		{
+			return new Pattern(PatternType::FLUSH, getBestValue(cards));
+		}
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkStraight(std::vector<Card>& cards)
+{
+	sortCards(cards);
+
+	const std::vector<Card> sequence = getSequence(cards);
+
+	if (sequence.size() == 5)
+	{
+		return new Pattern(PatternType::STRAIGHT, getBestValue(sequence));
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkThreeOfAKind(const std::vector<Card>& cards)
+{
+	for (auto &card : cards)
+	{
+		const int total = countValue(cards, card.GetValue());
+
+		if (total == 3)
+		{
+			return new Pattern(PatternType::THREE_OF_A_KIND, card.GetValue());
+		}
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkTwoPairs(const std::vector<Card>& cards)
+{
+	Pattern* pattern = nullptr;
+
+	for (auto& card : cards)
+	{
+		const int total = Pattern::countValue(cards, card.GetValue());
+
+		if (total == 2 && (pattern == nullptr || pattern->_bestValues.front() != card.GetValue()))
+		{
+			if (pattern != nullptr)
+			{
+				pattern->_bestValues.emplace_back(card.GetValue());
+				return pattern;
+			}
+
+			pattern = new Pattern(PatternType::TWO_PAIRS, card.GetValue(), CheckPriority::NO_ORDER);
+		}
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkPair(const std::vector<Card>& cards)
+{
+	for (auto& card : cards)
+	{
+		const int total = Pattern::countValue(cards, card.GetValue());
+
+		if (total == 2)
+		{
+			return new Pattern(PatternType::PAIR, card.GetValue());
+		}
+	}
+
+    return nullptr;
+}
+
+Pattern* Pattern::checkHighCard(const std::vector<Card>& cards)
+{
+	return new Pattern(PatternType::HIGH_CARD, getBestValue(cards));
+}
 
 Pattern::Pattern()
 {
 	this->_patternType = PatternType::END;
 	this->_bestValues = {CardValue::END};
+    this->_checkPriority = CheckPriority::ORDER;
 }
 
-Pattern::Pattern(const PatternType patternType, const std::vector<CardValue>& bestValues, CheckPriority checkPriority)
+Pattern::Pattern(const PatternType patternType, const std::vector<CardValue>& bestValues, const CheckPriority checkPriority)
 {
 	this->_patternType = patternType;
 	this->_bestValues = bestValues;
 	this->_checkPriority = checkPriority;
 }
 
-Pattern::Pattern(const PatternType patternType, const CardValue& bestValue, CheckPriority checkPriority)
+Pattern::Pattern(const PatternType patternType, const CardValue& bestValue, const CheckPriority checkPriority)
 {
 	this->_patternType = patternType;
 	this->_bestValues = { bestValue };
 	this->_checkPriority = checkPriority;
-}
-
-bool Pattern::IsBetter(const Pattern& other) const
-{
-	if (this->_patternType == other._patternType)
-	{
-		for (int i = 0; i < static_cast<int>(this->_bestValues.size()); i++)
-		{
-			if (this->_bestValues.at(i) > other._bestValues.at(i))
-			{
-				return true;
-			}
-		}
-		//TODO: Return an enum in order to count a draw
-		return false;
-	}
-
-	return this->_patternType > other._patternType;
 }
 
 PatternType Pattern::GetPatternType() const
@@ -52,80 +177,148 @@ std::vector<CardValue> Pattern::GetCardValue() const
 	return this->_bestValues;
 }
 
-Pattern Check(std::vector<Card>& cards)
+Pattern Pattern::Check(std::vector<Card>& cards)
 {
-	//TODO: Check in PatternType reverse order for all types
+	const std::vector<std::function<Pattern*(std::vector<Card>&)>> checks = {
+    	Pattern::checkStraightFlush,
+		Pattern::checkFourOfAKind,
+		Pattern::checkFullHouse,
+		Pattern::checkFlush,
+		Pattern::checkStraight,
+		Pattern::checkThreeOfAKind,
+		Pattern::checkTwoPairs,
+		Pattern::checkPair
+    };
 
-    std::map<CardValue, int> sameCardValue = {};
-    std::map<CardSuit, int> sameCardSuit = {};
-    std::map<CardSuit, std::map<CardValue, int>> sortedCards = {};
-    std::vector<CardValue> pair = {};
-    Pattern pattern;
+	for (auto &check : checks)
+	{
+		Pattern* pattern = check(cards);
+		if (pattern != nullptr)
+		{
+			return *pattern;
+		}
+	}
 
+	return *Pattern::checkHighCard(cards);
+}
 
-    for (Card card : cards)
+std::string Pattern::patternTypeToString() const
+{
+    switch (this->_patternType)
     {
-        if (sameCardValue.find(card.GetValue()) != sameCardValue.end())
-        {
-            sameCardValue[card.GetValue()] = 0;
-        }
-        sameCardValue[card.GetValue()]++;
-
-        if (sameCardSuit.find(card.GetSuit()) != sameCardSuit.end())
-        {
-            sameCardSuit[card.GetSuit()] = 0;
-        }
-        sameCardSuit[card.GetSuit()]++;
-
-        if (sortedCards.find(card.GetSuit()) != sortedCards.end())
-        {
-            sortedCards[card.GetSuit()] = {};
-        }
-
-        if (sortedCards[card.GetSuit()].find(card.GetValue()) != sortedCards[card.GetSuit()].end())
-        {
-            sortedCards[card.GetSuit()][card.GetValue()] = 0;
-        }
-        sortedCards[card.GetSuit()][card.GetValue()]++;
+		case PatternType::STRAIGHT_FLUSH:
+			return "Straight Flush";
+		case PatternType::FOUR_OF_A_KIND:
+			return "Four of a Kind";
+		case PatternType::FULL_HOUSE:
+			return "Full House";
+		case PatternType::FLUSH:
+			return "Flush";
+		case PatternType::STRAIGHT:
+			return "Straight";
+		case PatternType::THREE_OF_A_KIND:
+			return "Three of a Kind";
+		case PatternType::TWO_PAIRS:
+			return "Two Pairs";
+		case PatternType::PAIR:
+			return "Pair";
+		case PatternType::HIGH_CARD:
+			return "High Card";
+	    case PatternType::END:
+	        return "Unknown";
     }
 
+    return "Unknown";
+}
 
-    for (const auto& element : sameCardValue)
-    {
-        std::cout << static_cast<int>(element.first) << " " << static_cast<int>(element.second) << std::endl;
+int Pattern::countValue(const std::vector<Card>& cards, const CardValue value)
+{
+	int total = 0;
 
-        if (element.second == 4)
-        {
-            pattern = Pattern(PatternType::FOUR_OF_A_KIND, element.first);
-        }
-        else if (element.second == 3)
-        {
-            if (pattern.GetPatternType() == PatternType::PAIR)
-            {
-                pattern = Pattern(PatternType::FULL_HOUSE, { element.first , pattern.GetCardValue().front() });
-            }
-            else
-            {
-                pattern = Pattern(PatternType::THREE_OF_A_KIND, element.first);
-            }
-        }
-        else if (element.second == 2)
-        {
-            if (pattern.GetPatternType() == PatternType::THREE_OF_A_KIND)
-            {
-                pattern = Pattern(PatternType::FULL_HOUSE, { pattern.GetCardValue().front(), element.first });
-            }
-            else if (pattern.GetPatternType() == PatternType::PAIR)
-            {
-                pattern = Pattern(PatternType::TWO_PAIRS, { pattern.GetCardValue().front(), element.first });
-            }
-            else
-            {
-                pattern = Pattern(PatternType::PAIR, element.first, CheckPriority::NO_ORDER);
-            }
-        }
-    }
+	for (auto& card : cards)
+	{
+		if (card.GetValue() == value)
+		{
+			total++;
+		}
+	}
 
+	return total;
+}
 
-	return Pattern();
+void Pattern::sortCards(std::vector<Card>& cards)
+{
+	std::sort(cards.begin(), cards.end(), [](const Card& a, const Card& b) {
+		return a.GetValue() < b.GetValue();
+	});
+}
+
+std::vector<Card> Pattern::getSequence(const std::vector<Card>& cards, const bool sameSuit)
+{
+	std::vector<Card> bestSequence;
+	std::vector<Card> sequence;
+	bool follow = false;
+	CardValue value = cards.at(0).GetValue();
+
+	for (int i = 1; i < static_cast<int>(cards.size()); i++)
+	{
+		auto nextValue = static_cast<CardValue>(static_cast<int>(value) + 1);
+		if (nextValue == CardValue::END)
+		{
+			nextValue = CardValue::TWO;
+		}
+
+		if (nextValue != cards.at(i).GetValue() || sameSuit && cards.at(i).GetSuit() != cards.at(i - 1).GetSuit())
+		{
+			if (follow && sequence.size() > bestSequence.size())
+			{
+				bestSequence = sequence;
+			}
+			sequence = {};
+			follow = false;
+		}
+		else
+		{
+			value = cards.at(i).GetValue();
+			sequence.emplace_back(cards.at(i));
+			follow = true;
+		}
+	}
+
+	if (sequence.size() > bestSequence.size())
+	{
+		bestSequence = sequence;
+	}
+
+	return bestSequence;
+}
+
+CardValue Pattern::getBestValue(const std::vector<Card>& cards)
+{
+	CardValue bestValue = cards[0].GetValue();
+
+	for (auto& card : cards)
+	{
+		if (card.GetValue() > bestValue)
+		{
+			bestValue = card.GetValue();
+		}
+	}
+
+	return bestValue;
+}
+
+int Pattern::countSuit(const std::vector<Card>& cards, const CardSuit suit)
+{
+	int total = 0;
+
+	for (auto& card : cards)
+	{
+		if (card.GetSuit() == suit)
+		{
+			total++;
+		}
+	}
+
+	return total;
 }
