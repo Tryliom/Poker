@@ -8,19 +8,9 @@ Card::Card(const CardSuit hand, const CardValue value)
 	this->_value = value;
 }
 
-CardSuit Card::GetSuit() const
+std::string Card::CardSuitToString(CardSuit cardSuit)
 {
-	return this->_suit;
-}
-
-CardValue Card::GetValue() const
-{
-	return this->_value;
-}
-
-std::string Card::handToString() const
-{
-	switch (this->_suit)
+	switch (cardSuit)
 	{
 		case CardSuit::CLUBS:
 			return "clubs";
@@ -37,9 +27,9 @@ std::string Card::handToString() const
 	return "Unknown";
 }
 
-std::string Card::valueToString() const
+std::string Card::CardValueToString(const CardValue cardValue)
 {
-	switch (this->_value)
+	switch (cardValue)
 	{
 		case CardValue::TWO:
 			return "2";

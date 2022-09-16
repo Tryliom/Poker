@@ -15,9 +15,6 @@ class Card
 	private:
 		CardSuit _suit;
 		CardValue _value;
-
-		std::string handToString() const;
-		std::string valueToString() const;
 	public:
 		Card(CardSuit hand, CardValue value);
 
@@ -26,10 +23,12 @@ class Card
 		 */
 		explicit operator std::string() const
 		{
-			return this->valueToString() + " of " + this->handToString();
+			return CardValueToString(_value) + " of " + CardSuitToString(_suit);
 		}
 
-		CardSuit GetSuit() const;
-		CardValue GetValue() const;
+		CardSuit GetSuit() const { return this->_suit; }
+		CardValue GetValue() const { return this->_value; }
+		static std::string CardSuitToString(const CardSuit cardSuit);
+		static std::string CardValueToString(const CardValue cardValue);
 };
 
