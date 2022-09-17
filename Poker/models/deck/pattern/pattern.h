@@ -17,18 +17,11 @@ enum class PatternType
 	END
 };
 
-enum class CheckPriority
-{
-	ORDER,
-	NO_ORDER
-};
-
 class Pattern
 {
 private:
 	PatternType _patternType;
 	std::vector<CardValue> _bestValues;
-	CheckPriority _checkPriority;
 
 	// Type of pattern to check
 	static Pattern* checkStraightFlush(std::vector<Card>& cards);
@@ -43,14 +36,13 @@ private:
 
 	static int countValue(const std::vector<Card>& cards, CardValue value);
 	static int countSuit(const std::vector<Card>& cards, CardSuit suit);
-	static void sortCards(std::vector<Card>& cards);
 	static std::vector<Card> getSequence(const std::vector<Card>& cards, bool sameSuit = false);
 	static CardValue getBestValue(const std::vector<Card>& cards);
 	std::string patternTypeToString() const;
 public:
 	Pattern();
-	Pattern(const PatternType patternType, const std::vector<CardValue>& bestValues, const CheckPriority checkPriority = CheckPriority::ORDER);
-	Pattern(const PatternType patternType, const CardValue& bestValue, const CheckPriority checkPriority = CheckPriority::ORDER);
+	Pattern(const PatternType patternType, const std::vector<CardValue>& bestValues);
+	Pattern(const PatternType patternType, const CardValue& bestValue);
 	
 	PatternType GetPatternType() const;
 	std::vector<CardValue>  GetCardValue() const;
@@ -85,16 +77,15 @@ public:
 	{
 		if (this->_patternType == other._patternType)
 		{
-			int maxValue1 = 0;
-			int maxValue2 = 0;
-
 			for (int i = 0; i < static_cast<int>(this->_bestValues.size()); i++)
 			{
-				maxValue1 += static_cast<int>(this->_bestValues.at(i));
-				maxValue2 += static_cast<int>(other._bestValues.at(i));
+				if (this->_bestValues.at(i) != other._bestValues.at(i))
+				{
+					return false;
+				}
 			}
 
-			return maxValue1 == maxValue2;
+			return true;
 		}
 
 		return false;
@@ -121,12 +112,14 @@ public:
 		{
 			for (int i = 0; i < static_cast<int>(this->_bestValues.size()); i++)
 			{
-				if (this->_bestValues.at(i) > other._bestValues.at(i))
+				if (this->_bestValues.at(i) == other._bestValues.at(i))
 				{
-					return true;
+					continue;
 				}
-			}
 
+				return this->_bestValues.at(i) > other._bestValues.at(i);
+			}
+			
 			return false;
 		}
 

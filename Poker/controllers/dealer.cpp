@@ -8,7 +8,7 @@ Dealer::Dealer()
 	this->_deck = Deck();
     for (int i = 0; i < NB_PLAYER; i++)
     {
-		this->_players.emplace_back(Player("Player " + std::to_string(i)));
+		this->_players.emplace_back(Player("Player " + std::to_string(i), i));
     }
 }	
 
@@ -25,6 +25,11 @@ void Dealer::StartAGame()
 
 	// Determine the winner
 	std::sort(_players.begin(), _players.end(), [](const Player& player1, const Player& player2) {
+        if (player1.GetPattern() == player2.GetPattern())
+        {
+            return player1.GetOrder() < player2.GetOrder();
+        }
+
 		return player1.GetPattern() > player2.GetPattern();
     });
 

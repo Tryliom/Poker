@@ -6,8 +6,6 @@
 
 Pattern* Pattern::checkStraightFlush(std::vector<Card>& cards)
 {
-	sortCards(cards);
-
 	const std::vector<Card> sequence = getSequence(cards, true);
 
 	if (sequence.size() == 5)
@@ -76,8 +74,6 @@ Pattern* Pattern::checkFlush(const std::vector<Card>& cards)
 
 Pattern* Pattern::checkStraight(std::vector<Card>& cards)
 {
-	sortCards(cards);
-
 	const std::vector<Card> sequence = getSequence(cards);
 
 	if (sequence.size() == 5)
@@ -115,11 +111,11 @@ Pattern* Pattern::checkTwoPairs(const std::vector<Card>& cards)
 		{
 			if (pattern != nullptr)
 			{
-				pattern->_bestValues.emplace_back(card.GetValue());
+				pattern->_bestValues = { card.GetValue(), pattern->_bestValues[0]};
 				return pattern;
 			}
 
-			pattern = new Pattern(PatternType::TWO_PAIRS, card.GetValue(), CheckPriority::NO_ORDER);
+			pattern = new Pattern(PatternType::TWO_PAIRS, card.GetValue());
 		}
 	}
 
@@ -130,7 +126,7 @@ Pattern* Pattern::checkPair(const std::vector<Card>& cards)
 {
 	for (auto& card : cards)
 	{
-		const int total = Pattern::countValue(cards, card.GetValue());
+		const int total = countValue(cards, card.GetValue());
 
 		if (total == 2)
 		{
@@ -150,21 +146,18 @@ Pattern::Pattern()
 {
 	this->_patternType = PatternType::END;
 	this->_bestValues = {CardValue::END};
-    this->_checkPriority = CheckPriority::ORDER;
 }
 
-Pattern::Pattern(const PatternType patternType, const std::vector<CardValue>& bestValues, const CheckPriority checkPriority)
+Pattern::Pattern(const PatternType patternType, const std::vector<CardValue>& bestValues)
 {
 	this->_patternType = patternType;
 	this->_bestValues = bestValues;
-	this->_checkPriority = checkPriority;
 }
 
-Pattern::Pattern(const PatternType patternType, const CardValue& bestValue, const CheckPriority checkPriority)
+Pattern::Pattern(const PatternType patternType, const CardValue& bestValue)
 {
 	this->_patternType = patternType;
 	this->_bestValues = { bestValue };
-	this->_checkPriority = checkPriority;
 }
 
 PatternType Pattern::GetPatternType() const
@@ -244,13 +237,6 @@ int Pattern::countValue(const std::vector<Card>& cards, const CardValue value)
 	}
 
 	return total;
-}
-
-void Pattern::sortCards(std::vector<Card>& cards)
-{
-	std::sort(cards.begin(), cards.end(), [](const Card& a, const Card& b) {
-		return a.GetValue() < b.GetValue();
-	});
 }
 
 std::vector<Card> Pattern::getSequence(const std::vector<Card>& cards, const bool sameSuit)
