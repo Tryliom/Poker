@@ -1,7 +1,6 @@
 #pragma once
 #include "../models/deck/deck.h"
 #include "../models/player/player.h"
-#include "../models/deck/pattern/pattern.h"
 
 class Player;
 int constexpr NB_PLAYER = 5;

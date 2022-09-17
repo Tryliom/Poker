@@ -11,7 +11,7 @@
 std::string utf16_to_utf8(const std::u16string& utf16String)
 {
 	std::wstring_convert<std::codecvt_utf8_utf16<int16_t>, int16_t> convert;
-	auto p = reinterpret_cast<const int16_t*>(utf16String.data());
+	const auto p = reinterpret_cast<const int16_t*>(utf16String.data());
 	return convert.to_bytes(p, p + utf16String.size());
 }
 
@@ -21,7 +21,7 @@ Card::Card(const CardSuit suit, const CardValue value)
 	this->_value = value;
 }
 
-std::string Card::CardSuitToString(CardSuit cardSuit)
+std::string Card::CardSuitToString(const CardSuit cardSuit)
 {
 	switch (cardSuit)
 	{
