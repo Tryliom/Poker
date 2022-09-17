@@ -4,7 +4,7 @@
 #include <functional>
 #include <ostream>
 
-Pattern* Pattern::checkStraightFlush(std::vector<Card>& cards)
+Pattern* Pattern::checkStraightFlush(const std::vector<Card>& cards)
 {
 	const std::vector<Card> sequence = getSequence(cards, true);
 
@@ -72,7 +72,7 @@ Pattern* Pattern::checkFlush(const std::vector<Card>& cards)
     return nullptr;
 }
 
-Pattern* Pattern::checkStraight(std::vector<Card>& cards)
+Pattern* Pattern::checkStraight(const std::vector<Card>& cards)
 {
 	const std::vector<Card> sequence = getSequence(cards);
 
@@ -160,18 +160,9 @@ Pattern::Pattern(const PatternType patternType, const CardValue& bestValue)
 	this->_bestValues = { bestValue };
 }
 
-PatternType Pattern::GetPatternType() const
-{
-	return this->_patternType;
-}
-
-std::vector<CardValue> Pattern::GetCardValue() const
-{
-	return this->_bestValues;
-}
-
 Pattern Pattern::Check(std::vector<Card>& cards)
 {
+	// Test every check in a order with the highest pattern first
 	const std::vector<std::function<Pattern*(std::vector<Card>&)>> checks = {
     	Pattern::checkStraightFlush,
 		Pattern::checkFourOfAKind,
@@ -185,6 +176,7 @@ Pattern Pattern::Check(std::vector<Card>& cards)
 
 	for (auto &check : checks)
 	{
+		// If a pattern is found, return it
 		Pattern* pattern = check(cards);
 		if (pattern != nullptr)
 		{
@@ -192,7 +184,7 @@ Pattern Pattern::Check(std::vector<Card>& cards)
 		}
 	}
 
-	return *Pattern::checkHighCard(cards);
+	return *checkHighCard(cards);
 }
 
 std::string Pattern::patternTypeToString() const
@@ -243,31 +235,30 @@ std::vector<Card> Pattern::getSequence(const std::vector<Card>& cards, const boo
 {
 	std::vector<Card> bestSequence;
 	std::vector<Card> sequence;
-	bool follow = false;
 	CardValue value = cards.at(0).GetValue();
 
 	for (int i = 1; i < static_cast<int>(cards.size()); i++)
 	{
-		auto nextValue = static_cast<CardValue>(static_cast<int>(value) + 1);
-		if (nextValue == CardValue::END)
+		auto expectedValue = static_cast<CardValue>(static_cast<int>(value) + 1);
+		if (expectedValue == CardValue::END)
 		{
-			nextValue = CardValue::TWO;
+			expectedValue = CardValue::TWO;
 		}
 
-		if (nextValue != cards.at(i).GetValue() || sameSuit && cards.at(i).GetSuit() != cards.at(i - 1).GetSuit())
+		// Check if the expected value is the same as the current card, check if the suits are the same if needed
+		if (expectedValue != cards.at(i).GetValue() || sameSuit && cards.at(i).GetSuit() != cards.at(i - 1).GetSuit())
 		{
-			if (follow && sequence.size() > bestSequence.size())
+			// If not, check if the sequence is longer than the best sequence and replace it if true
+			if (sequence.size() > bestSequence.size())
 			{
 				bestSequence = sequence;
 			}
 			sequence = {};
-			follow = false;
 		}
 		else
 		{
 			value = cards.at(i).GetValue();
 			sequence.emplace_back(cards.at(i));
-			follow = true;
 		}
 	}
 

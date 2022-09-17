@@ -1,9 +1,8 @@
 #include "player.h"
-
-#include <algorithm>
-
 #include "../deck/card.h"
 #include "../deck/pattern/pattern.h"
+
+#include <algorithm>
 
 Player::Player(const std::string& name, const int order)
 {

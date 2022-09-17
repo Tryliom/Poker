@@ -1,7 +1,7 @@
 #pragma once
-#include <vector>
-
 #include "card.h"
+
+#include <vector>
 
 class Deck
 {
@@ -31,7 +31,7 @@ class Deck
 		{
 			std::string result = "This deck contains " + std::to_string(this->_cards.size()) + " cards:";
 
-			for (Card card : this->_cards)
+			for (auto &card : this->_cards)
 			{
 				result += "\n" + static_cast<std::string>(card);
 			}

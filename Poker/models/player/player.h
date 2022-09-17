@@ -12,6 +12,7 @@ private:
     std::vector<Card> _hand;
     Pattern _pattern;
     int _score;
+	// Order used to sort players when they have the same pattern
 	int _order;
 public:
     Player(const std::string& name, int order);
@@ -24,6 +25,13 @@ public:
 	void IncrementScore() { this->_score++; }
 	int GetOrder() const { return this->_order; }
 
+    /**
+	 * \brief Add a card to the player's hand
+	 * \param card {Card} The card to add
+     */
     void AddCard(Card card);
-	void CheckPattern();
+    /**
+	 * \brief The player look at his hand and check the best pattern he have
+     */
+    void CheckPattern();
 };
