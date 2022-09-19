@@ -5,6 +5,11 @@
 #include <iostream>
 #include <thread>
 
+int constexpr NAME_WIDTH = 20;
+int constexpr TEXT_Y_OFFSET = 4;
+int constexpr CARD_WIDTH = 12;
+int constexpr CARD_HEIGHT = 9;
+
 Dealer::Dealer()
 {
 	this->_deck = Deck();
@@ -12,73 +17,62 @@ Dealer::Dealer()
     {
 		this->_players.emplace_back(Player("Player " + std::to_string(i), i));
     }
-	this->_status = Status::IN_GAME;
+	this->_status = Status::START;
 }
 
 void Dealer::OnTick()
 {
-    _display.Clear();
+    _screen.Clear();
 	this->Update();
-    _display.Render();
+    _screen.Render();
 }
 
 void Dealer::Update()
 {
+    int y = 1;
+
     for (int i = 0; i < NB_PLAYER; i++)
     {
+        int x = 2;
 	    Player& player = this->_players[i];
-    	std::string display = player.GetName() + " (" + std::to_string(player.GetScore()) + "p)" + ": ";
-    	std::string cards;
+    	std::string name = player.GetName() + " (" + std::to_string(player.GetScore()) + "p)";
 
-    	for (Card card : player.GetHand())
+        // Crash here
+		_screen.Draw(name, x, y + TEXT_Y_OFFSET);
+		x += NAME_WIDTH;
+
+    	for (const Card &card : player.GetHand())
     	{
-    		if (!cards.empty())
-    		{
-    			cards += ", ";
-    		}
+            if (player.GetHandStatus() == HandStatus::HIDDEN)
+            {
+				_screen.DrawImage(_assets.GetHiddenCard(), x, y);
+            }
+            else
+            {
+                _screen.DrawImage(_assets.GetCard(card), x, y);
+            }
 
-    		cards += player.GetHandStatus() == HandStatus::HIDDEN ? "?" : static_cast<std::string>(card);
+			x += CARD_WIDTH + 1;
     	}
-
-    	display += cards;
 
     	if (player.GetPattern().GetPatternType() != PatternType::END) {
-            display += " -> " + static_cast<std::string>(player.GetPattern());
-
-    		if (i == 0)
-    		{
-    			if (_players[i + 1].GetPattern() == _players[i].GetPattern())
-    			{
-    				display += " DRAW";
-    			}
-    			else
-    			{
-    				display += " WINNER";
-    			}
-    		}
-    		else
-    		{
-    			for (int j = i - 1; j >= 0; j--)
-    			{
-    				if (_players[j].GetPattern() != _players[i].GetPattern()) {
-    					break;
-    				}
-
-    				if (j == 0)
-    				{
-    					display += " DRAW";
-    				}
-    			}
-    		}
+			_screen.Draw(static_cast<std::string>(player.GetPattern()), x, y + TEXT_Y_OFFSET);
+			x += NAME_WIDTH;
     	}
 
-        _display.Draw(display, 0, i);
+        if (_status == Status::DISPLAY_RESULTS)
+        {
+            // Display results, the place of the player
+            _screen.Draw(std::to_string(i + 1) + ((i + 1) == 1 ? "st" : "th") + " place", x, y + TEXT_Y_OFFSET);
+        }
+
+        y += CARD_HEIGHT + 1;
     }
 
 
     if (_status == Status::WAITING)
     {
-		_display.Draw("Press Enter to continue or any other key to stop", 0, NB_PLAYER + 2);
+		_screen.Draw("Press Enter to continue or any other key to stop", 0, y + CARD_HEIGHT + 2);
     }
 }
 
@@ -92,7 +86,7 @@ void Dealer::StartAGame()
 		player.ThrowCardsAway();
     }
     // Set current status of the game
-	_status = Status::IN_GAME;
+	_status = Status::START;
     // Distribute card to each players
     this->distributeCards();
 
@@ -116,12 +110,9 @@ void Dealer::StartAGame()
 		return player1.GetPattern() > player2.GetPattern();
     });
 
+	_status = Status::DISPLAY_RESULTS;
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	_players.front().IncrementScore();
-
-    // Display win count for everyone
-    std::sort(_players.begin(), _players.end(), [](const Player& player1, const Player& player2) {
-        return player1.GetScore() > player2.GetScore();
-    });
 
 	this->_status = Status::WAITING;
 }

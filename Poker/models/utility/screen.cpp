@@ -1,7 +1,10 @@
 #include "screen.h"
 
+#include <chrono>
+#include <codecvt>
 #include <iostream>
 #include <ostream>
+#include <thread>
 #include <windows.h>
 
 void Screen::setPos(const int x, const int y)
@@ -27,13 +30,25 @@ void Screen::Clear()
 	this->_width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	this->_screen = {};
 	
+	CONSOLE_CURSOR_INFO cursorInfo;
+	GetConsoleCursorInfo(output, &cursorInfo);
+	// set the cursor visibility
+	cursorInfo.bVisible = false;
+	SetConsoleCursorInfo(output, &cursorInfo);
 
 	for (int h = 0; h < _height; h++)
 	{
 		std::string row;
 		for (int w = 0; w < _width; w++)
 		{
-			row += " ";
+			if (w == 0 || w == _width - 1 || h == 0 || h == _height - 1)
+			{
+				row += "#";
+			}
+			else
+			{
+				row += " ";
+			}
 		}
 
 		this->_screen.emplace_back(row);
@@ -42,9 +57,13 @@ void Screen::Clear()
 
 void Screen::Render() const
 {
-	this->setPos(0, 0);
 	for (int h = 0; h < _height; h++)
 	{
+		// for (int w = 0; w < _width; w++)
+		// {
+		// 	this->setPos(w, h);
+		// 	std::cout << this->_screen[h][w];
+		// }
 		this->setPos(0, h);
 		std::cout << this->_screen[h];
 	}
@@ -52,11 +71,27 @@ void Screen::Render() const
 
 void Screen::Draw(const std::string& str, const int x, const int y)
 {
+	if (_height <= y || _width <= x)
+	{
+		return;
+	}
+
 	for (int i = 0; i < static_cast<int>(str.length()); i++)
 	{
-		if (static_cast<int>(this->_screen[y].length()) > x + i)
+		if (x + i >= _width)
 		{
-			this->_screen[y][x + i] = str[i];
+			break;
 		}
+		
+		this->_screen[y][x + i] = str[i];
+	}
+}
+
+void Screen::DrawImage(const CardImage& image, const int x, int y)
+{
+	for (std::string str : image.GetImage())
+	{
+		this->Draw(str, x, y);
+		y++;
 	}
 }

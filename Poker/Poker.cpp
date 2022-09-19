@@ -6,19 +6,8 @@
 
 int constexpr FPS = 60;
 
-void HideConsoleCursor()
-{
-	HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO cursorInfo;
-	GetConsoleCursorInfo(output, &cursorInfo);
-	// set the cursor visibility
-	cursorInfo.bVisible = false;
-	SetConsoleCursorInfo(output, &cursorInfo);
-}
-
 void main()
 {
-	HideConsoleCursor();
 	// Set console to UTF-8 in order to display emojis
     SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTitleA("Poker");

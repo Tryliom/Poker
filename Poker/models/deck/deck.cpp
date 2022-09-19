@@ -3,9 +3,6 @@
 
 #include <random>
 
-const std::vector<CardSuit> HANDS = {CardSuit::CLUBS, CardSuit::DIAMONDS, CardSuit::HEARTS, CardSuit::SPADES};
-const std::vector<CardValue> VALUES = { CardValue::TWO, CardValue::THREE, CardValue::FOUR, CardValue::FIVE, CardValue::SIX, CardValue::SEVEN, CardValue::EIGHT, CardValue::NINE, CardValue::TEN, CardValue::JACK, CardValue::QUEEN, CardValue::KING, CardValue::ACE };
-
 Deck::Deck()
 {
 	// Loop in suits and values to insert every type of cards inside the deck

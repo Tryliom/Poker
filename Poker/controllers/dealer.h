@@ -2,6 +2,7 @@
 #include "../models/utility/Screen.h"
 #include "../models/deck/deck.h"
 #include "../models/player/player.h"
+#include "../models/image/assets.h"
 
 class Player;
 int constexpr NB_PLAYER = 5;
@@ -9,7 +10,8 @@ int constexpr START_CARD_PER_PLAYERS = 5;
 
 enum class Status
 {
-	IN_GAME,
+	START,
+	DISPLAY_RESULTS,
 	WAITING,
 };
 
@@ -29,10 +31,12 @@ private:
 	 */
 	Status _status;
 
+	Assets _assets;
+
 	/**
-	 * \brief Display screen
+	 * \brief Screen utility
 	 */
-	Screen _display;
+	Screen _screen;
 
 	/**
 	 * \brief Distribute a number of card equal to START_CARD_PER_PLAYERS to each players unless the deck is empty

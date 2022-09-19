@@ -1,4 +1,6 @@
 #pragma once
+#include "../image/cardImage.h"
+
 #include <string>
 #include <vector>
 
@@ -18,6 +20,8 @@ public:
 	void Render() const;
 
 	void Draw(const std::string& str, int x, int y);
+
+	void DrawImage(const CardImage& image, int x, int y);
 
 	int GetHeight() const { return this->_height; }
 	int GetWidth() const { return this->_width; }
