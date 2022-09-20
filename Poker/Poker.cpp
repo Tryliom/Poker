@@ -6,11 +6,21 @@
 
 int constexpr FPS = 60;
 
-void main()
+void SetupConsole()
 {
 	// Set console to UTF-8 in order to display emojis
-    SetConsoleOutputCP(CP_UTF8);
+	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTitleA("Poker");
+	// Set console size
+	const HWND console = GetConsoleWindow();
+	RECT r;
+	GetWindowRect(console, &r);
+	MoveWindow(console, r.left, r.top, 1500, 1000, TRUE);
+}
+
+void main()
+{
+	SetupConsole();
     Dealer dealer;
 	std::thread t([&dealer]()
 	{

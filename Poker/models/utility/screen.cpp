@@ -89,9 +89,9 @@ void Screen::Draw(const std::string& str, const int x, const int y)
 
 void Screen::DrawImage(const CardImage& image, const int x, int y)
 {
-	for (std::string str : image.GetImage())
+	for (const std::string& str : image.GetImage())
 	{
-		this->Draw(str, x, y);
+		this->Draw("\t " + str, x, y);
 		y++;
 	}
 }

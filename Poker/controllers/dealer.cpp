@@ -52,7 +52,7 @@ void Dealer::Update()
                 _screen.DrawImage(_assets.GetCard(card), x, y);
             }
 
-			x += CARD_WIDTH + 1;
+			x += CARD_WIDTH + 3;
     	}
 
     	if (player.GetPattern().GetPatternType() != PatternType::END) {
