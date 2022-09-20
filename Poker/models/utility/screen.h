@@ -7,7 +7,7 @@
 class Screen
 {
 private:
-	std::vector<std::string> _screen;
+	std::vector<std::vector<std::string>> _screen;
 	int _height;
 	int _width;
 
@@ -19,7 +19,7 @@ public:
 
 	void Render() const;
 
-	void Draw(const std::string& str, int x, int y);
+	void Draw(const std::string& str, int x, int y, bool centered = false);
 
 	void DrawImage(const CardImage& image, int x, int y);
 

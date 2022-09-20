@@ -5,6 +5,8 @@
 #include <thread>
 
 int constexpr FPS = 60;
+int constexpr WIDTH = 1200;
+int constexpr HEIGHT = 1000;
 
 void SetupConsole()
 {
@@ -15,7 +17,7 @@ void SetupConsole()
 	const HWND console = GetConsoleWindow();
 	RECT r;
 	GetWindowRect(console, &r);
-	MoveWindow(console, r.left, r.top, 1500, 1000, TRUE);
+	MoveWindow(console, r.left, r.top, WIDTH, HEIGHT, TRUE);
 }
 
 void main()
