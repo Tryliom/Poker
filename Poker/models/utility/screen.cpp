@@ -74,26 +74,31 @@ void Screen::Render() const
 	}
 }
 
-void Screen::Draw(const std::string& str, int x, const int y, const bool centered)
+void Screen::Draw(Text text)
 {
-	if (centered)
+	if (text.YCentered)
 	{
-		x -= str.length() / 2;
+		text.Y = _height / 2;
 	}
 
-	if (_height <= y || _width <= x)
+	if (text.XCentered)
+	{
+		text.X -= static_cast<int>(text.Str.length()) / 2;
+	}
+
+	if (_height <= text.Y || _width <= text.X)
 	{
 		return;
 	}
 
-	for (int i = 0; i < static_cast<int>(str.size()); i++)
+	for (int i = 0; i < static_cast<int>(text.Str.size()); i++)
 	{
-		if (x + i >= _width)
+		if (text.X + i >= _width)
 		{
 			break;
 		}
 
-		this->_screen[y][x + i] = str[i];
+		this->_screen[text.Y][text.X + i] = text.Str[i];
 	}
 }
 
@@ -101,7 +106,7 @@ void Screen::DrawImage(const CardImage& image, const int x, int y)
 {
 	for (const std::string& str : image.GetImage())
 	{
-		this->Draw("\t" + str, x, y);
+		this->Draw(Text{ "\t" + str, x, y, false, false});
 		y++;
 	}
 }

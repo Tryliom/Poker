@@ -24,6 +24,7 @@ CardImage::CardImage(const std::string& path)
 CardImage::CardImage(const std::string& path, const CardSuit suit)
 {
 	_image = {};
+
 	std::ifstream file(path);
 	std::string line;
 	const std::string symbol = Card::CardSuitToString(suit);

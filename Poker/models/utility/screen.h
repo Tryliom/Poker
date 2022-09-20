@@ -4,6 +4,15 @@
 #include <string>
 #include <vector>
 
+struct Text
+{
+	std::string Str{};
+	int X{ 0 };
+	int Y{ 0 };
+	bool YCentered{ false };
+	bool XCentered{ false };
+};
+
 class Screen
 {
 private:
@@ -19,7 +28,7 @@ public:
 
 	void Render() const;
 
-	void Draw(const std::string& str, int x, int y, bool centered = false);
+	void Draw(Text text);
 
 	void DrawImage(const CardImage& image, int x, int y);
 

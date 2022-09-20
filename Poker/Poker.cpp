@@ -4,8 +4,7 @@
 #include <iostream>
 #include <thread>
 
-int constexpr FPS = 60;
-int constexpr WIDTH = 1200;
+int constexpr WIDTH = 1300;
 int constexpr HEIGHT = 1000;
 
 void SetupConsole()
@@ -29,7 +28,6 @@ void main()
 		while (true)
 		{
 			dealer.OnTick();
-			std::this_thread::sleep_for(std::chrono::milliseconds(1000 / FPS));
 		}
 	});
 	t.detach();
