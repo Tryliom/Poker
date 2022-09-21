@@ -33,7 +33,6 @@ CardImage::CardImage(const std::string& path, const CardSuit suit)
 	{
 		// Replace all § by the symbol
 		line = std::regex_replace(line, std::regex(u8"§"), symbol);
-		//line = std::regex_replace(line, std::regex(u8"§"), "O");
 		_image.emplace_back(line);
 	}
 }

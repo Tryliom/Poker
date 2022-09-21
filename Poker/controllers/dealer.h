@@ -30,11 +30,12 @@ private:
 	 * \brief The current status of the game
 	 */
 	Status _status;
-
-	Assets _assets;
-
 	/**
-	 * \brief Screen utility
+	 * \brief Assets containing all the card images
+	 */
+	Assets _assets;
+	/**
+	 * \brief The screen used to display the game
 	 */
 	Screen _screen;
 

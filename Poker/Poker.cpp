@@ -23,6 +23,7 @@ void main()
 {
 	SetupConsole();
     Dealer dealer;
+	// Start a new thread to refresh the console output
 	std::thread t([&dealer]()
 	{
 		while (true)

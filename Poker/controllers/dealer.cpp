@@ -113,8 +113,6 @@ void Dealer::StartAGame()
 	_status = Status::DISPLAY_RESULTS;
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	_players.front().IncrementScore();
-
-	this->_status = Status::WAITING;
 }
 
 void Dealer::distributeCards()

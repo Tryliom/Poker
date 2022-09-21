@@ -9,6 +9,7 @@ bool constexpr BORDER = false;
 
 void Screen::setPos(const int x, const int y)
 {
+	// Set the position of the cursor
 	COORD pos = { static_cast<SHORT>(x), static_cast<SHORT>(y) };
 	const HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(output, pos);
@@ -23,19 +24,21 @@ Screen::Screen()
 
 void Screen::Clear()
 {
+	// Set the height and width according to the console window
 	const HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(output, &csbi);
 	this->_height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 	this->_width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	this->_screen = {};
-	
+
+	// Hide the cursor
 	CONSOLE_CURSOR_INFO cursorInfo;
 	GetConsoleCursorInfo(output, &cursorInfo);
-	// set the cursor visibility
 	cursorInfo.bVisible = false;
 	SetConsoleCursorInfo(output, &cursorInfo);
 
+	// Fill the screen with spaces and # if BORDER is true for borders
 	for (int h = 0; h < _height; h++)
 	{
 		std::vector<std::string> row;
@@ -64,6 +67,7 @@ void Screen::Clear()
 
 void Screen::Render() const
 {
+	// Display every lines of the screen
 	for (int h = 0; h < _height; h++)
 	{
 		this->setPos(0, h);
@@ -86,6 +90,7 @@ void Screen::Draw(Text text)
 		text.X -= static_cast<int>(text.Str.length()) / 2;
 	}
 
+	// If the text is out of the screen, don't draw it
 	if (_height <= text.Y || _width <= text.X)
 	{
 		return;
