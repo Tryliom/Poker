@@ -18,6 +18,7 @@ Dealer::Dealer()
 		this->_players.emplace_back(Player("Player " + std::to_string(i), i));
     }
 	this->_status = Status::START;
+	this->_totalBet = 0;
 }
 
 void Dealer::OnTick()
@@ -35,9 +36,14 @@ void Dealer::Update()
     {
         int x = 2;
 	    Player& player = this->_players[i];
-    	std::string name = player.GetName() + " (" + std::to_string(player.GetScore()) + "p)";
+        const std::string name = player.GetName() + " (" + std::to_string(player.GetMoney()) + "$)";
 
-        // Crash here
+        if (player.GetMoneyDiff() != 0)
+        {
+            _screen.Draw(Text{ (player.GetMoneyDiff() > 0 ? "+" : "-") + std::to_string(abs(player.GetMoneyDiff())),
+                x + static_cast<int>((player.GetName() + " (" + std::to_string(player.GetMoney())).size()) - static_cast<int>((std::to_string(abs(player.GetMoneyDiff()))).size() + 1),
+            	y + TEXT_Y_OFFSET - 1});
+        }
         _screen.Draw(Text{name, x, y + TEXT_Y_OFFSET});
 		x += NAME_WIDTH;
 
@@ -93,11 +99,22 @@ void Dealer::StartAGame()
     // Every player check what pattern they have
     for (Player &player: this->_players)
     {
-        player.SetHandStatus(HandStatus::SHOWING);
-		player.SortHand();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		player.CheckPattern();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        if (player.GetMoney() > 0)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				player.DecreaseMoneyDiff(5);
+                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+            }
+	        this->_totalBet += player.GetBet();
+            player.ResetMoneyDiff();
+        	player.SetHandStatus(HandStatus::SHOWING);
+        	player.SortHand();
+        	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        	player.CheckPattern();
+        	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
     }
 
 	// Determine the winner
@@ -107,7 +124,14 @@ void Dealer::StartAGame()
 
 	_status = Status::DISPLAY_RESULTS;
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-	_players.front().IncrementScore();
+    for (int i = 0; i < 10; i++)
+    {
+		_players.front().IncreaseMoneyDiff(_totalBet / 10);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+    _players.front().AddMoney(_totalBet);
+    _players.front().ResetMoneyDiff();
+    _totalBet = 0;
 }
 
 void Dealer::distributeCards()
@@ -120,10 +144,13 @@ void Dealer::distributeCards()
     {
         for (Player& player : this->_players)
         {
-            player.AddCard(this->_deck.PickACard());
-            if (this->_deck.IsEmpty())
+            if (player.GetMoney() > 0)
             {
-                return;
+	            player.AddCard(this->_deck.PickACard());
+            	if (this->_deck.IsEmpty())
+            	{
+            		return;
+            	}
             }
         }
 

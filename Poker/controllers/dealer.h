@@ -39,6 +39,7 @@ private:
 	 */
 	Screen _screen;
 
+	int _totalBet;
 	/**
 	 * \brief Distribute a number of card equal to START_CARD_PER_PLAYERS to each players unless the deck is empty
 	 */

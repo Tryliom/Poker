@@ -9,7 +9,8 @@ Player::Player(const std::string& name, const int order)
 	this->_name = name;
     this->_hand = {};
 	this->_pattern = Pattern();
-	this->_score = 0;
+	this->_money = 150;
+	this->_moneyDiff = 0;
 	this->_handStatus = HandStatus::HIDDEN;
 }
 
