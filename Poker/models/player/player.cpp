@@ -11,6 +11,14 @@ Player::Player(const std::string& name, const int order)
 	this->_pattern = Pattern();
 	this->_score = 0;
 	this->_order = order;
+	this->_handStatus = HandStatus::HIDDEN;
+}
+
+void Player::ThrowCardsAway()
+{
+	_hand = {};
+	_pattern = Pattern();
+	_handStatus = HandStatus::HIDDEN;
 }
 
 void Player::AddCard(Card card)
@@ -20,10 +28,14 @@ void Player::AddCard(Card card)
 
 void Player::CheckPattern()
 {
+	// Check what the best pattern he have
+	this->_pattern = Pattern::Check(this->_hand);
+}
+
+void Player::SortHand()
+{
 	// Sort his cards
 	std::sort(_hand.begin(), _hand.end(), [](const Card& a, const Card& b) {
 		return a.GetValue() < b.GetValue();
 	});
-	// Check what the best pattern he have
-	this->_pattern = Pattern::Check(this->_hand);
 }

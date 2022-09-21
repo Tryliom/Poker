@@ -2,19 +2,6 @@
 
 #include <codecvt>
 
-/**
- * \brief This function come from https://mariusbancila.ro/blog/2019/05/16/cpp-is-fun/ \n
- * It converts a utf16 string to a utf8 string, used to convert emojis
- * \param utf16String The utf16 string to convert
- * \return The utf8 string
- */
-std::string utf16_to_utf8(const std::u16string& utf16String)
-{
-	std::wstring_convert<std::codecvt_utf8_utf16<int16_t>, int16_t> convert;
-	const auto p = reinterpret_cast<const int16_t*>(utf16String.data());
-	return convert.to_bytes(p, p + utf16String.size());
-}
-
 Card::Card(const CardSuit suit, const CardValue value)
 {
 	this->_suit = suit;
@@ -26,13 +13,13 @@ std::string Card::CardSuitToString(const CardSuit cardSuit)
 	switch (cardSuit)
 	{
 		case CardSuit::CLUBS:
-			return utf16_to_utf8(u"♣");
+			return u8"♣";
 		case CardSuit::HEARTS:
-			return utf16_to_utf8(u"♥");
+			return u8"♥";
 		case CardSuit::SPADES:
-			return utf16_to_utf8(u"♠");
+			return u8"♠";
 		case CardSuit::DIAMONDS:
-			return utf16_to_utf8(u"♦");
+			return u8"♦";
 		case CardSuit::END:
 			return "unknown";
 	}

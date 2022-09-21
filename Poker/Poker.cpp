@@ -1,20 +1,42 @@
 #include "controllers/Dealer.h"
-#include "models/utility/utils.h"
 
 #include <windows.h>
 #include <iostream>
+#include <thread>
+
+int constexpr WIDTH = 1300;
+int constexpr HEIGHT = 1000;
+
+void SetupConsole()
+{
+	// Set console to UTF-8 in order to display emojis
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleTitleA("Poker");
+	// Set console size
+	const HWND console = GetConsoleWindow();
+	RECT r;
+	GetWindowRect(console, &r);
+	MoveWindow(console, r.left, r.top, WIDTH, HEIGHT, TRUE);
+}
 
 void main()
 {
-	// Set console to UTF-8 in order to display emojis
-    SetConsoleOutputCP(CP_UTF8);
+	SetupConsole();
     Dealer dealer;
+	// Start a new thread to refresh the console output
+	std::thread t([&dealer]()
+	{
+		while (true)
+		{
+			dealer.OnTick();
+		}
+	});
+	t.detach();
 
     do
     {
-		Utils::ClearConsole();
         dealer.StartAGame();
-		std::cout << "Press Enter to continue or any other key to quit" << std::endl;
+		dealer.SetStatus(Status::WAITING);
 		// Wait for the user to press enter or any other key to stop
         if (std::cin.peek() != '\n') {
             break;

@@ -5,6 +5,12 @@
 
 class Card;
 
+enum class HandStatus
+{
+	HIDDEN,
+	SHOWING,
+};
+
 class Player
 {
 private:
@@ -14,6 +20,7 @@ private:
     int _score;
 	// Order used to sort players when they have the same pattern
 	int _order;
+	HandStatus _handStatus;
 public:
     Player(const std::string& name, int order);
 
@@ -26,6 +33,11 @@ public:
 	int GetOrder() const { return this->_order; }
 
     /**
+	 * \brief Throw away all the cards in the hand
+     */
+    void ThrowCardsAway();
+
+    /**
 	 * \brief Add a card to the player's hand
 	 * \param card {Card} The card to add
      */
@@ -34,4 +46,11 @@ public:
 	 * \brief The player look at his hand and check the best pattern he have
      */
     void CheckPattern();
+    /**
+     * \brief The player sort his hand by value
+     */
+    void SortHand();
+
+	void SetHandStatus(const HandStatus status) { this->_handStatus = status; }
+	HandStatus GetHandStatus() const { return this->_handStatus; }
 };

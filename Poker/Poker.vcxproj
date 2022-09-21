@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,21 +128,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="models\image\cardImage.cpp" />
+    <ClCompile Include="models\image\assets.cpp" />
+    <ClCompile Include="models\utility\screen.cpp" />
     <ClCompile Include="models\deck\card.cpp" />
     <ClCompile Include="models\deck\deck.cpp" />
     <ClCompile Include="controllers\dealer.cpp" />
     <ClCompile Include="models\deck\pattern\pattern.cpp" />
     <ClCompile Include="models\player\player.cpp" />
-    <ClCompile Include="models\utility\utils.cpp" />
     <ClCompile Include="Poker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="models\image\cardImage.h" />
+    <ClInclude Include="models\image\assets.h" />
+    <ClInclude Include="models\utility\screen.h" />
     <ClInclude Include="models\deck\card.h" />
     <ClInclude Include="models\deck\deck.h" />
     <ClInclude Include="controllers\dealer.h" />
     <ClInclude Include="models\deck\pattern\pattern.h" />
-    <ClInclude Include="models\utility\utils.h" />
     <ClInclude Include="models\player\player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\images\cards\ace_0.txt" />
+    <Text Include="assets\images\cards\ace_1.txt" />
+    <Text Include="assets\images\cards\ace_2.txt" />
+    <Text Include="assets\images\cards\ace_3.txt" />
+    <Text Include="assets\images\cards\card_0.txt" />
+    <Text Include="assets\images\cards\card_1.txt" />
+    <Text Include="assets\images\cards\card_10.txt" />
+    <Text Include="assets\images\cards\card_11.txt" />
+    <Text Include="assets\images\cards\card_2.txt" />
+    <Text Include="assets\images\cards\card_3.txt" />
+    <Text Include="assets\images\cards\card_4.txt" />
+    <Text Include="assets\images\cards\card_5.txt" />
+    <Text Include="assets\images\cards\card_6.txt" />
+    <Text Include="assets\images\cards\card_7.txt" />
+    <Text Include="assets\images\cards\card_8.txt" />
+    <Text Include="assets\images\cards\card_9.txt" />
+    <Text Include="assets\images\cards\hidden_card.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
