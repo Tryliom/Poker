@@ -10,7 +10,6 @@ Player::Player(const std::string& name, const int order)
     this->_hand = {};
 	this->_pattern = Pattern();
 	this->_score = 0;
-	this->_order = order;
 	this->_handStatus = HandStatus::HIDDEN;
 }
 
