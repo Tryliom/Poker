@@ -9,7 +9,6 @@ struct Text
 	std::string Str{};
 	int X{ 0 };
 	int Y{ 0 };
-	bool YCentered{ false };
 	bool XCentered{ false };
 };
 

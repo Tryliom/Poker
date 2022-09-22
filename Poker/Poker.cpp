@@ -16,7 +16,7 @@ void SetupConsole()
 	const HWND console = GetConsoleWindow();
 	RECT r;
 	GetWindowRect(console, &r);
-	MoveWindow(console, r.left, r.top, WIDTH, HEIGHT, TRUE);
+	MoveWindow(console, 0, 0, WIDTH, HEIGHT, TRUE);
 }
 
 void main()
@@ -33,14 +33,7 @@ void main()
 	});
 	t.detach();
 
-    do
-    {
-        dealer.StartAGame();
-		dealer.SetStatus(Status::WAITING);
-		// Wait for the user to press enter or any other key to stop
-        if (std::cin.peek() != '\n') {
-            break;
-        }
-        std::cin.ignore();
-    } while (true);
+	dealer.StartAGame();
+	dealer.SetStatus(Status::WAITING);
+	dealer.WaitToEnterKey();
 }

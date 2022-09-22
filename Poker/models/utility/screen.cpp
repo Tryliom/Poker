@@ -80,11 +80,6 @@ void Screen::Render() const
 
 void Screen::Draw(Text text)
 {
-	if (text.YCentered)
-	{
-		text.Y = _height / 2;
-	}
-
 	if (text.XCentered)
 	{
 		text.X -= static_cast<int>(text.Str.length()) / 2;
@@ -111,7 +106,7 @@ void Screen::DrawImage(const CardImage& image, const int x, int y)
 {
 	for (const std::string& str : image.GetImage())
 	{
-		this->Draw(Text{ "\t" + str, x, y, false, false});
+		this->Draw(Text{ "\t" + str, x, y, false});
 		y++;
 	}
 }

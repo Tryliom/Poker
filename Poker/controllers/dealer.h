@@ -11,6 +11,7 @@ int constexpr START_CARD_PER_PLAYERS = 5;
 enum class Status
 {
 	START,
+	CHOOSING_BET,
 	DISPLAY_RESULTS,
 	WAITING,
 };
@@ -46,6 +47,11 @@ private:
 	void distributeCards();
 public:
 	Dealer();
+
+	int SelectedChoice = 0;
+	std::vector<int> Bets = {};
+	bool CanEnterKey = false;
+
 	/**
 	 * \brief Update the game
 	 */
@@ -58,10 +64,17 @@ public:
 	 * \brief Start a new game
 	 */
 	void StartAGame();
+
+	void WaitToEnterKey();
 	/**
 	 * \brief Set the status of the game
 	 * \param status The new status of the game
 	 */
 	void SetStatus(const Status status) { this->_status = status; }
+	/**
+	 * \brief Get the status of the game
+	 * \return The status of the game
+	 */
+	Status GetStatus() const { return this->_status; }
 };
 
