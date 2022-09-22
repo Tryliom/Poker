@@ -50,7 +50,7 @@ Pattern* Pattern::checkFlush(const std::vector<Card>& cards)
 	{
 		if (countSuit(cards, static_cast<CardSuit>(i)) == 5)
 		{
-			return new Pattern(PatternType::FLUSH, getBestValue(cards));
+			return new Pattern(PatternType::FLUSH, getBestValues(cards));
 		}
 	}
 
@@ -268,6 +268,20 @@ CardValue Pattern::getBestValue(const std::vector<Card>& cards)
 	}
 
 	return bestValue;
+}
+
+std::vector<CardValue> Pattern::getBestValues(const std::vector<Card>& cards)
+{
+	std::vector<CardValue> bestValues = {};
+	auto copy = const_cast<std::vector<Card>&>(cards);
+	std::reverse(copy.begin(), copy.end());
+
+	for (auto& card : copy)
+	{
+		bestValues.emplace_back(card.GetValue());
+	}
+
+	return bestValues;
 }
 
 int Pattern::countSuit(const std::vector<Card>& cards, const CardSuit suit)

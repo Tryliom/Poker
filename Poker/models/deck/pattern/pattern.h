@@ -111,6 +111,12 @@ private:
 	 */
 	static CardValue getBestValue(const std::vector<Card>& cards);
 	/**
+	 * \brief Get a list of card values sorted by their card value
+	 * \param cards The cards to check
+	 * \return A list of the best card values
+	 */
+	static std::vector<CardValue> getBestValues(const std::vector<Card>& cards);
+	/**
 	 * \brief Convert a pattern type to a string
 	 * \return The string representation of the pattern type
 	 */
