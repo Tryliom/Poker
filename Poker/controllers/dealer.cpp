@@ -77,7 +77,17 @@ void Dealer::Update()
         if (_status == Status::DISPLAY_RESULTS || _status == Status::WAITING)
         {
             // Display results, the place of the player
-            _screen.Draw(Text{std::to_string(i + 1) + ((i + 1) == 1 ? "st" : "th") + " place", x, y + TEXT_Y_OFFSET });
+            bool isBest = false;
+			for (Player bestPlayer: BestPlayers)
+			{
+                if (bestPlayer.GetName() == player.GetName())
+                    isBest = true;
+			}
+
+            if (isBest)
+            {
+	            _screen.Draw(Text{static_cast<int>(BestPlayers.size()) > 1 ? "Draw" : "Winner", x, y + TEXT_Y_OFFSET});
+            }
         }
 
         y += CARD_HEIGHT + 1;
@@ -134,32 +144,62 @@ void Dealer::StartAGame()
     // Every player check what pattern they have
     for (Player &player: this->_players)
     {
-        if (player.GetMoney() > 0)
+        if (player.GetMoney() == 0)
+            continue;
+        player.SetHandStatus(HandStatus::SHOWING);
+        player.SortHand();
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        player.CheckPattern();
+        // Choose how many money to bet
+        Bets = { player.GetMoney() / 10, player.GetMoney() / 4, player.GetMoney() / 2 };
+        if (Bets[0] < 10)
         {
-        	player.SetHandStatus(HandStatus::SHOWING);
-        	player.SortHand();
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            player.CheckPattern();
-            Bets = { player.GetMoney() / 10, player.GetMoney() / 4, player.GetMoney() / 2 };
-            if (Bets.front() < 10)
+            if (player.GetMoney() < 10)
             {
-				Bets = { player.GetMoney() };
-			}
-            SelectedChoice = 0;
-			_status = Status::CHOOSING_BET;
-            WaitToEnterKey();
-            _status = Status::START;
-            CanEnterKey = false;
-            for (int i = 0; i < 5; i++)
+                Bets = {player.GetMoney()};
+            } else
             {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-				player.DecreaseMoneyDiff(Bets[SelectedChoice] / 5);
-                std::this_thread::sleep_for(std::chrono::milliseconds(200));
+                Bets[0] = 10;
             }
-            this->_totalBet += Bets[SelectedChoice];
-            player.SubtractMoney(Bets[SelectedChoice]);
-            player.ResetMoneyDiff();
+		}
+        if (Bets[1] < 25)
+        {
+            if (player.GetMoney() < 25)
+            {
+				Bets = { 10, player.GetMoney() };
+			}
+			else
+			{
+				Bets[1] = 25;
+            }
         }
+        if (Bets[2] < 50)
+        {
+            if (player.GetMoney() < 50)
+            {
+                Bets = { 10, 25, player.GetMoney() };
+            }
+            else
+            {
+                Bets[2] = 50;
+            }
+        }
+
+        SelectedChoice = 0;
+		_status = Status::CHOOSING_BET;
+        // Let user choose the value of the bet
+        WaitToEnterKey();
+        _status = Status::START;
+        CanEnterKey = false;
+        for (int i = 0; i < 3; i++)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			player.DecreaseMoneyDiff(Bets[SelectedChoice] / 3);
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        }
+        this->_totalBet += Bets[SelectedChoice];
+        player.SubtractMoney(Bets[SelectedChoice]);
+        player.ResetMoneyDiff();
     }
 
 	// Determine the winner
@@ -167,15 +207,49 @@ void Dealer::StartAGame()
 		return player1.GetPattern() > player2.GetPattern();
     });
 
-	_status = Status::DISPLAY_RESULTS;
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    for (int i = 0; i < 10; i++)
+    auto bestPattern = Pattern(PatternType::HIGH_CARD, CardValue::TWO);
+    BestPlayers = {};
+    for (Player player: _players)
     {
-		_players.front().IncreaseMoneyDiff(_totalBet / 10);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        if (player.GetMoney() == 0)
+            continue;
+        if (player.GetPattern() > bestPattern)
+        {
+            BestPlayers = { player };
+			bestPattern = player.GetPattern();
+        } else if (player.GetPattern() == bestPattern)
+        {
+            BestPlayers.emplace_back(player);
+        }
     }
-    _players.front().AddMoney(_totalBet);
-    _players.front().ResetMoneyDiff();
+
+    // Display who wins and the animation of the money going up
+	_status = Status::DISPLAY_RESULTS;
+    int betToGain = _totalBet / static_cast<int>(BestPlayers.size());
+    for (Player &player: _players)
+    {
+        if (player.GetMoney() == 0)
+            continue;
+        bool isBest = false;
+        for (const Player bestPlayer : BestPlayers)
+        {
+            if (bestPlayer.GetName() == player.GetName())
+                isBest = true;
+        }
+
+        if (isBest)
+        {
+	        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        	for (int i = 0; i < 5; i++)
+        	{
+        		player.IncreaseMoneyDiff(betToGain / 5);
+        		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        	}
+        	player.AddMoney(betToGain);
+        	player.ResetMoneyDiff();
+        }
+    }
+    
     _totalBet = 0;
 }
 

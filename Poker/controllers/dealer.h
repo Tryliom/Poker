@@ -47,10 +47,14 @@ private:
 	void distributeCards();
 public:
 	Dealer();
-
+	// Selected choice in a bet
 	int SelectedChoice = 0;
+	// The possible bets
 	std::vector<int> Bets = {};
+	// True if the user can press keys
 	bool CanEnterKey = false;
+	// The best players of the game
+	std::vector<Player> BestPlayers = {};
 
 	/**
 	 * \brief Update the game
@@ -64,7 +68,9 @@ public:
 	 * \brief Start a new game
 	 */
 	void StartAGame();
-
+	/**
+	 * \brief Ask for the user to enter key and do things in it
+	 */
 	void WaitToEnterKey();
 	/**
 	 * \brief Set the status of the game

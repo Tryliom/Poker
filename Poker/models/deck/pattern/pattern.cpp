@@ -12,7 +12,6 @@ Pattern* Pattern::checkStraightFlush(const std::vector<Card>& cards)
 	{
 		return new Pattern(PatternType::STRAIGHT_FLUSH, getBestValue(sequence));
 	}
-		
 
     return nullptr;
 }
@@ -34,26 +33,12 @@ Pattern* Pattern::checkFourOfAKind(const std::vector<Card>& cards)
 
 Pattern* Pattern::checkFullHouse(const std::vector<Card>& cards)
 {
-	CardValue* threeOfAKindValue = nullptr;
-	CardValue* pairValue = nullptr;
+	const Pattern* threeOfAKind = checkThreeOfAKind(cards);
+	const Pattern* pair = checkPair(cards);
 
-	for (auto& card : cards)
+	if (threeOfAKind != nullptr && pair != nullptr)
 	{
-		const int total = countValue(cards, card.GetValue());
-
-		if (total == 3)
-		{
-			threeOfAKindValue = new CardValue(card.GetValue());
-		}
-		else if (total == 2)
-		{
-			pairValue = new CardValue(card.GetValue());
-		}
-	}
-
-	if (threeOfAKindValue != nullptr && pairValue != nullptr)
-	{
-		return new Pattern(PatternType::FULL_HOUSE, { *threeOfAKindValue, *pairValue });
+		return new Pattern(PatternType::FULL_HOUSE, { threeOfAKind->GetCardValue()[0], pair->GetCardValue()[0] });
 	}
 
     return nullptr;
