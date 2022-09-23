@@ -71,7 +71,7 @@ void Dealer::Update()
 
     	if (player.GetPattern().GetPatternType() != PatternType::END) {
             _screen.Draw(Text{ static_cast<std::string>(player.GetPattern()), x + 3, y + TEXT_Y_OFFSET });
-			x += NAME_WIDTH * 2;
+			x += NAME_WIDTH * 3;
     	}
 
         if (_status == Status::DISPLAY_RESULTS || _status == Status::WAITING)

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <thread>
 
-int constexpr WIDTH = 1300;
+int constexpr WIDTH = 1400;
 int constexpr HEIGHT = 1000;
 
 void SetupConsole()

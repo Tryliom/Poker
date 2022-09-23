@@ -4,6 +4,19 @@
 #include <functional>
 #include <ostream>
 
+std::vector<CardValue> operator+(std::vector<CardValue> const& x, std::vector<CardValue> const& y) {
+	std::vector<CardValue> vec;
+	vec.reserve(x.size() + y.size());
+	vec.insert(vec.end(), x.begin(), x.end());
+	vec.insert(vec.end(), y.begin(), y.end());
+	return vec;
+}
+
+std::vector<CardValue> operator+=(std::vector<CardValue> & x, std::vector<CardValue> const& y) {
+	x.insert(x.end(), y.begin(), y.end());
+	return x;
+}
+
 Pattern* Pattern::checkStraightFlush(const std::vector<Card>& cards)
 {
 	const std::vector<Card> sequence = getSequence(cards, true);
@@ -24,7 +37,9 @@ Pattern* Pattern::checkFourOfAKind(const std::vector<Card>& cards)
 
 		if (total == 4)
 		{
-			return new Pattern(PatternType::FOUR_OF_A_KIND, card.GetValue());
+			std::vector<CardValue> bestValues = { card.GetValue() };
+			bestValues += getBestValues(cards, bestValues);
+			return new Pattern(PatternType::FOUR_OF_A_KIND, bestValues);
 		}
 	}
 
@@ -63,7 +78,7 @@ Pattern* Pattern::checkStraight(const std::vector<Card>& cards)
 
 	if (sequence.size() == 5)
 	{
-		return new Pattern(PatternType::STRAIGHT, getBestValue(sequence));
+		return new Pattern(PatternType::STRAIGHT, getBestValues(sequence));
 	}
 
     return nullptr;
@@ -77,7 +92,9 @@ Pattern* Pattern::checkThreeOfAKind(const std::vector<Card>& cards)
 
 		if (total == 3)
 		{
-			return new Pattern(PatternType::THREE_OF_A_KIND, card.GetValue());
+			std::vector<CardValue> bestValues = { card.GetValue() };
+			bestValues += getBestValues(cards, bestValues);
+			return new Pattern(PatternType::THREE_OF_A_KIND, bestValues);
 		}
 	}
 
@@ -90,13 +107,14 @@ Pattern* Pattern::checkTwoPairs(const std::vector<Card>& cards)
 
 	for (auto& card : cards)
 	{
-		const int total = Pattern::countValue(cards, card.GetValue());
+		const int total = countValue(cards, card.GetValue());
 
 		if (total == 2 && (pattern == nullptr || pattern->_bestValues.front() != card.GetValue()))
 		{
 			if (pattern != nullptr)
 			{
 				pattern->_bestValues = { card.GetValue(), pattern->_bestValues[0]};
+				pattern->_bestValues += getBestValues(cards, pattern->_bestValues);
 				return pattern;
 			}
 
@@ -115,7 +133,8 @@ Pattern* Pattern::checkPair(const std::vector<Card>& cards)
 
 		if (total == 2)
 		{
-			return new Pattern(PatternType::PAIR, card.GetValue());
+			const std::vector<CardValue> cardValues = { card.GetValue() };
+			return new Pattern(PatternType::PAIR, cardValues + getBestValues(cards, { card.GetValue() }));
 		}
 	}
 
@@ -124,7 +143,7 @@ Pattern* Pattern::checkPair(const std::vector<Card>& cards)
 
 Pattern* Pattern::checkHighCard(const std::vector<Card>& cards)
 {
-	return new Pattern(PatternType::HIGH_CARD, getBestValue(cards));
+	return new Pattern(PatternType::HIGH_CARD, getBestValues(cards));
 }
 
 Pattern::Pattern()
@@ -149,14 +168,14 @@ Pattern Pattern::Check(std::vector<Card>& cards)
 {
 	// Test every check in a order with the highest pattern first
 	const std::vector<std::function<Pattern*(std::vector<Card>&)>> checks = {
-    	Pattern::checkStraightFlush,
-		Pattern::checkFourOfAKind,
-		Pattern::checkFullHouse,
-		Pattern::checkFlush,
-		Pattern::checkStraight,
-		Pattern::checkThreeOfAKind,
-		Pattern::checkTwoPairs,
-		Pattern::checkPair
+    	checkStraightFlush,
+		checkFourOfAKind,
+		checkFullHouse,
+		checkFlush,
+		checkStraight,
+		checkThreeOfAKind,
+		checkTwoPairs,
+		checkPair
     };
 
 	for (auto &check : checks)
@@ -270,7 +289,7 @@ CardValue Pattern::getBestValue(const std::vector<Card>& cards)
 	return bestValue;
 }
 
-std::vector<CardValue> Pattern::getBestValues(const std::vector<Card>& cards)
+std::vector<CardValue> Pattern::getBestValues(const std::vector<Card>& cards, const std::vector<CardValue>& excludedValues)
 {
 	std::vector<CardValue> bestValues = {};
 	auto copy = const_cast<std::vector<Card>&>(cards);
@@ -278,7 +297,10 @@ std::vector<CardValue> Pattern::getBestValues(const std::vector<Card>& cards)
 
 	for (auto& card : copy)
 	{
-		bestValues.emplace_back(card.GetValue());
+		if (std::find(excludedValues.begin(), excludedValues.end(), card.GetValue()) == excludedValues.end())
+		{
+			bestValues.emplace_back(card.GetValue());
+		}
 	}
 
 	return bestValues;
